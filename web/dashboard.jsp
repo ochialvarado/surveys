@@ -18,7 +18,7 @@
     <body>
        <div id="container"> 
             <div id="header"> 
-                <div id="logo"><a href="principal.xhtml"></a></div>
+                <div id="logo"><a href="dashboard.jsp"></a></div>
                 <div id="panel">Sistema de encuestas</div>
                 <div class="btn-salir"><a href="logout.jsp">CERRAR SESIÓN</a></div>
             </div>
@@ -26,9 +26,10 @@
                 <div class="left">
                     <div id="menu">
                         <div class="head">MENU</div>
-                        <ul> 
+                        <ul>
+                            <li><a href="listUser.jsp">Usuarios</a></li> 
                             <li><a href="createUser.jsp">>Mi Perfil</a></li>
-                            <li><a href="surveys.xhtml">Mis Encuestas</a></li> 
+                            <li><a href="surveys.jsp">Mis Encuestas</a></li> 
                         </ul>
                     </div>
                 </div> 
