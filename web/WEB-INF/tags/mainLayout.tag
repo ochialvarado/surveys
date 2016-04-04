@@ -17,7 +17,7 @@
             <div id="header"> 
                 <div id="logo"><a href="dashboard.jsp"></a></div>
                 <div id="panel">Sistema de encuestas</div>
-                <div class="btn-salir"><a href="logout.jsp">CERRAR SESIÓN</a></div>
+                <div class="btn-salir"><a href="/surveys/UserController?action=logout   ">CERRAR SESIÓN</a></div>
             </div>
             <div id="main">
                 <div class="left">
@@ -25,8 +25,8 @@
                         <div class="head">MENU</div>
                         <ul>
                             <li><a href="/surveys/UserController?action=listUser">Usuarios</a></li> 
-                            <li><a href="createUser.jsp">>Mi Perfil</a></li>
-                            <li><a href="surveys.jsp">Mis Encuestas</a></li> 
+                            <li><a href="/surveys/UserController?action=createUser">>Mi Perfil</a></li>
+                            <li><a href="/surveys/SurveysController?action=surveys">Mis Encuestas</a></li> 
                         </ul>
                     </div>
                 </div> 

@@ -179,7 +179,7 @@
             <div id="index"></div>
             <div id="main">
                 <div id="login">
-                    <form name="formLogin" class="formulario" method="post" action="login.jsp">
+                    <form name="formLogin" class="formulario" method="post" action="/surveys/UserController?action=login">
                         <%
                             String error = request.getParameter("error");
                             if(error != null) {
@@ -198,15 +198,15 @@
                             }  
                         %>
 
-                        <label class="label">Usuario:</label>
-                        <input type="text" name="usuario" id="usuario" maxlength="60" class="input"/>
+                        <label class="label">Email</label>
+                        <input type="text" name="email" id="usuario" maxlength="60" class="input"/>
                         <label class="label">Contraseña:</label>
-                        <input type="password" name="contrasena" id="contrasena" maxlength="20" class="input"/>
+                        <input type="password" name="password" id="contrasena" maxlength="20" class="input"/>
                         <input name="Submit" type="submit" id="button" value="ENTRAR" onFocus="this.blur();" class="btn-entrar"/>
-                        <input type="hidden" name="accion" value="trues"/>
-                        <div class="clear"> </div>
+                        <input type="hidden" name="action" value="login"/>
+                        <div class="clear"> </div> 
                     </form>
-                    <a id="register" href="register.xhtml">Registrarse</a>
+                    <a id="register" href="/surveys/UserController?action=createUser">Registrarse</a>
                 </div>
             </div>
         </div>

@@ -165,7 +165,25 @@ public class UserDao {
 
     }
 
+    public Integer login(String username, String password) {
+        User user = new User();
+        
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM \"users\" WHERE \"email\"=\'"+ username +"\' AND \"password\"=\'" + password+"\'");
 
+            if (rs.next()) {                
+                return rs.getInt("user_id");
+            } else {
+                return 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return 0;
+    }
 
     public User getUserById(int userId) {
 
@@ -175,7 +193,7 @@ public class UserDao {
 
             PreparedStatement preparedStatement = connection.
 
-                    prepareStatement("SELECT * FROM users WHERE user_id=?");
+                    prepareStatement("SELECT * FROM \"users\" WHERE \"user_id\"=?");
 
             preparedStatement.setInt(1, userId);
 

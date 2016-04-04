@@ -9,8 +9,6 @@ import java.text.SimpleDateFormat;
 
 import java.util.Date;
 
-import java.sql.Timestamp;
-
 import javax.servlet.RequestDispatcher;
 
 import javax.servlet.ServletException;
@@ -23,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import model.User;
 
 import dao.UserDao;
+import service.SessionService;
 
 
 
@@ -33,8 +32,14 @@ public class UserController extends HttpServlet {
     private static String INSERT_OR_EDIT = "/user.jsp";
 
     private static String LIST_USER = "/listUser.jsp";
+    
+    private static String LOGIN = "/dashboard.jsp";
+    
+    private static String NOTLOGGED = "/index.jsp?error=true";
 
     private UserDao dao;
+    
+    private SessionService sessionService;
 
 
 
@@ -43,6 +48,8 @@ public class UserController extends HttpServlet {
         super();
 
         dao = new UserDao();
+        
+        sessionService = new SessionService();
 
     }
 
@@ -54,8 +61,14 @@ public class UserController extends HttpServlet {
         String forward="";
 
         String action = request.getParameter("action");
-
-        System.out.println(action);
+        
+        if (action.equalsIgnoreCase("logout")){
+            request.getSession().setAttribute("sessionUser", null);
+        }
+        
+        if(sessionService.checkSession(request, response) == null) {
+            return;
+        }
 
         if (action.equalsIgnoreCase("delete")){
 
@@ -84,71 +97,63 @@ public class UserController extends HttpServlet {
             request.setAttribute("users", dao.getAllUsers());
 
         } else {
-
             forward = INSERT_OR_EDIT;
-
         }
 
-
-
         RequestDispatcher view = request.getRequestDispatcher(forward);
-
         view.forward(request, response);
-
     }
 
 
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        String forward="";
+        String action = request.getParameter("action");
+        
+        if (action.equalsIgnoreCase("login")){
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            Integer userID = dao.login(email, password);
+            
+            if (userID > 0) {
+                forward = LOGIN;
+                User user = dao.getUserById(userID);
+                request.getSession().setAttribute("sessionUser", user);
+                request.setAttribute("User", user);
+            } else {
+                forward = NOTLOGGED;
+            }
+        } else {
+        
+            User user = new User();
+            user.setName(request.getParameter("name"));
+        
+            try {
+                Date startDate = new SimpleDateFormat("MM/dd/yyyy H:i:s").parse(request.getParameter("startDate"));
+                user.setStartDate(startDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
-        User user = new User();
+            user.setEmail(request.getParameter("email"));
 
-        user.setName(request.getParameter("name"));
+            String userId = request.getParameter("userId");
 
-
-        try {
-
-            Date startDate = new SimpleDateFormat("MM/dd/yyyy H:i:s").parse(request.getParameter("startDate"));
-
-            user.setStartDate(startDate);
-
-        } catch (ParseException e) {
-
-            e.printStackTrace();
-
+            if(userId == null || userId.isEmpty()) {
+                dao.addUser(user);
+            } else {
+                user.setUserId(Integer.parseInt(userId));
+                dao.updateUser(user);
+            }
+            forward = LIST_USER;
+            request.setAttribute("users", dao.getAllUsers());
         }
-
-        user.setEmail(request.getParameter("email"));
-
-        String userId = request.getParameter("userId");
-
-        if(userId == null || userId.isEmpty())
-
-        {
-
-            dao.addUser(user);
-
-        }
-
-        else
-
-        {
-
-            user.setUserId(Integer.parseInt(userId));
-
-            dao.updateUser(user);
-
-        }
-
-        RequestDispatcher view = request.getRequestDispatcher(LIST_USER);
-
-        request.setAttribute("users", dao.getAllUsers());
-
+        
+        RequestDispatcher view = request.getRequestDispatcher(forward);
         view.forward(request, response);
-
     }
-
 }
 
 
