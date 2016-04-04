@@ -35,13 +35,7 @@ public class DbUtil {
 
             try {
 
-                Properties prop = new Properties();
-
-                InputStream inputStream = DbUtil.class.getClassLoader().getResourceAsStream("/db.properties");
-
-                prop.load(inputStream);
-
-                String driver = "com.derby.jdbc.Driver";
+                String driver = "org.apache.derby.jdbc.ClientDriver";
 
                 String url = "jdbc:derby://localhost:1527/surveys";
 
@@ -60,25 +54,11 @@ public class DbUtil {
             } catch (SQLException e) {
 
                 e.printStackTrace();
-
-            } catch (FileNotFoundException e) {
-
-                e.printStackTrace();
-
-            } catch (IOException e) {
-
-                e.printStackTrace();
-
             }
 
             return connection;
-
         }
-
-
-
     }
-
 }
 
 

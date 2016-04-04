@@ -134,7 +134,8 @@ public class UserDao {
             System.out.println(connection);
             Statement statement = connection.createStatement();
 
-            ResultSet rs = statement.executeQuery("SELECT * FROM \"users\" ");
+            ResultSet rs = statement.executeQuery("SELECT * FROM \"users\"");
+            
             
             System.out.println(rs);
 
