@@ -27,9 +27,9 @@ function valida(form){
 	else form.email.className='input';
 	
 	if (value != ""){
-		document.getElementById("validacion").innerHTML = '<p><strong>LOS SIGUIENTES ERRORES HAN OCURRIDO:</strong></p>'+value;
-		$("#validacion").slideDown('slow');
-		return false;
+            document.getElementById("validacion").innerHTML = '<p><strong>LOS SIGUIENTES ERRORES HAN OCURRIDO:</strong></p>'+value;
+            $("#validacion").slideDown('slow');
+            return false;
 	}
 }//valida
 function validaEdit(form){

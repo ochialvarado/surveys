@@ -20,17 +20,7 @@
                 <div class="btn-salir"><a href="/surveys/UserController?action=logout   ">CERRAR SESIÓN</a></div>
             </div>
             <div id="main">
-                <div class="left">
-                    <div id="menu">
-                        <div class="head">MENU</div>
-                        <ul>
-                            <li><a href="/surveys/UserController?action=listUser">Usuarios</a></li> 
-                            <li><a href="/surveys/UserController?action=createUser">Mi Perfil</a></li>
-                            <li><a href="/surveys/SurveysController?action=surveys">Mis Encuestas</a></li> 
-                        </ul>
-                    </div>
-                </div> 
-                <div class="right"> 
+                <div class="right" style="width:100%;"> 
                     <div id="content"> 
                         <jsp:doBody />
                     </div>

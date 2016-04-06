@@ -206,7 +206,7 @@
                         <input type="hidden" name="action" value="login"/>
                         <div class="clear"> </div> 
                     </form>
-                    <a id="register" href="/surveys/UserController?action=createUser">Registrarse</a>
+                    <a id="register" href="/surveys/UserController?action=register">Registrarse</a>
                 </div>
             </div>
         </div>

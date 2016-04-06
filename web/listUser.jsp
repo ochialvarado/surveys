@@ -5,7 +5,7 @@
 <custom:mainLayout title="Dashboard">
 
     <h1>Usuarios</h1>
-    <div id="validacion" style="display:none">Los cambios se realizaron corectamente.</div> 
+    <div id="validacion" style="display:none;">Los cambios se realizaron corectamente.</div> 
     <div class="btn-agregar"><a style="margin-right:40px;"  href="/user.jsp">Agregar pregunta</a></div> 
 
         <table>
@@ -21,14 +21,8 @@
                     <td>${User.email}</td> 
                     <td>${User.startDate}</td> 
                     <td class="center"><a href="/surveys/UserController?action=edit&userId=${User.userId}"><img src="img/img_editar.png" alt="EDITAR"></a></td>
-                    <td class="center"><a href="#" onclick="if(confirm('Realmente desea eliminar el usuario')){window.open('/surveys/UserController?action=delete&userId=${User.userId}','_self');}"><img src="img/img_eliminar.png" alt="ELIMINAR"></a></td>
+                    <td class="center"><a href="#" onclick="if(confirm('Realmente desea eliminar el usuario: ${User.name}')){window.open('/surveys/UserController?action=delete&userId=${User.userId}','_self');}"><img src="img/img_eliminar.png" alt="ELIMINAR"></a></td>
                 </tr>
             </c:forEach> 
         </table>
-    <script language="javascript" type="text/javascript">
-        $(document).ready(function(){
-                $("#validacion").show();
-                setTimeout('$("#validacion").hide()',2000);
-        });
-    </script>
 </custom:mainLayout>

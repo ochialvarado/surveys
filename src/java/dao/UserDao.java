@@ -1,127 +1,54 @@
-
 package dao;
-
 import java.sql.Connection;
-
 import java.sql.PreparedStatement;
-
 import java.sql.ResultSet;
-
 import java.sql.SQLException;
-
 import java.sql.Statement;
-
 import java.util.ArrayList;
-
 import java.util.List;
-
 import model.User;
-
 import util.DbUtil;
 
-
-
 public class UserDao {
-
-
-
     private Connection connection;
-
-
-
+    
     public UserDao() {
-
         connection = DbUtil.getConnection();
-
     }
-
-
-
+    
     public void addUser(User user) {
-
         try {
-
-            PreparedStatement preparedStatement = connection
-
-                    .prepareStatement("insert into users(name,password,email,start_date) values (?, ?, ?, ? )");
-
-            // Parameters start with 1
-
-            preparedStatement.setString(1, user.getName());
-
-            preparedStatement.setString(2, user.getPassword());
+            Statement statement = connection.createStatement();
+            String sqlString = "INSERT INTO \"users\" (\"name\",\"password\",\"email\") VALUES (\'"+ user.getName() +"\',\'"+ user.getPassword() +"\', \'"+ user.getEmail() +"\')";
+            System.out.println(sqlString);
+            statement.executeUpdate(sqlString);
             
-            preparedStatement.setString(3, user.getEmail());
-
-            preparedStatement.setDate(4, new java.sql.Date(user.getStartDate().getTime()));
-
-            preparedStatement.executeUpdate();
-
-
         } catch (SQLException e) {
-
             e.printStackTrace();
-
         }
-
     }
-
-
 
     public void deleteUser(int userId) {
-
         try {
-
-            PreparedStatement preparedStatement = connection
-
-                    .prepareStatement("delete from users where user_id=?");
-
-            // Parameters start with 1
-
-            preparedStatement.setInt(1, userId);
-
-            preparedStatement.executeUpdate();
-
-
-
+            Statement statement = connection.createStatement();
+            String sqlString = "DELETE FROM \"users\" WHERE \"user_id\"= " + userId;
+            System.out.println(sqlString);
+            statement.executeUpdate(sqlString);
+            
         } catch (SQLException e) {
-
             e.printStackTrace();
-
         }
-
     }
 
-
-
     public void updateUser(User user) {
-
         try {
-
-            PreparedStatement preparedStatement = connection
-
-                    .prepareStatement("UPDATE users SET name=?, password=?, email=?" +
-
-                            "WHERE user_id=?");
-
-            // Parameters start with 1
-
-            preparedStatement.setString(1, user.getName());
-
-            preparedStatement.setString(2, user.getPassword());
-
-            preparedStatement.setString(3, user.getEmail());
-
-            preparedStatement.setInt(4, user.getUserId());
-
-            preparedStatement.executeUpdate();
-
-
+           Statement statement = connection.createStatement();
+           String sqlString = "UPDATE \"users\" SET \"name\"=\'"+ user.getName() +"\', \"password\"=\'"+ user.getPassword() +"\', \"email\"=\'"+ user.getEmail() +"\' WHERE \"user_id\"="+ user.getUserId();
+           System.out.println(sqlString);
+           statement.executeUpdate(sqlString);
 
         } catch (SQLException e) {
-
             e.printStackTrace();
-
         }
 
     }
@@ -133,36 +60,21 @@ public class UserDao {
         try {
             System.out.println(connection);
             Statement statement = connection.createStatement();
-
             ResultSet rs = statement.executeQuery("SELECT * FROM \"users\"");
-            
-            
             System.out.println(rs);
 
             while (rs.next()) {
-
                 User user = new User();
-
                 user.setUserId(rs.getInt("user_id"));
-
                 user.setName(rs.getString("name"));
-                
                 user.setEmail(rs.getString("email"));
-
                 users.add(user);
-
             }
-
         } catch (SQLException e) {
-
             e.printStackTrace();
-
         }
-
-
-
+        
         return users;
-
     }
 
     public Integer login(String username, String password) {
@@ -186,43 +98,24 @@ public class UserDao {
     }
 
     public User getUserById(int userId) {
-
         User user = new User();
 
         try {
-
-            PreparedStatement preparedStatement = connection.
-
-                    prepareStatement("SELECT * FROM \"users\" WHERE \"user_id\"=?");
-
-            preparedStatement.setInt(1, userId);
-
-            ResultSet rs = preparedStatement.executeQuery();
-
-
+            System.out.println(connection);
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM \"users\" WHERE \"user_id\"="+ userId );
+            System.out.println(rs);
 
             if (rs.next()) {
-
                 user.setUserId(rs.getInt("user_id"));
-
                 user.setName(rs.getString("name"));
-
                 user.setEmail(rs.getString("email"));
-
+                user.setPassword(rs.getString("password"));
             }
-
         } catch (SQLException e) {
-
             e.printStackTrace();
-
         }
-
-
-
+        
         return user;
-
     }
-
 }
-
-
