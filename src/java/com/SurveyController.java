@@ -49,8 +49,10 @@ public class SurveyController extends HttpServlet {
         }
         if (action.equalsIgnoreCase("firstStep")){
             int surveyId = Integer.parseInt(request.getParameter("id"));
+            Survey survey = dao.getSurveyById(surveyId);
+            request.setAttribute("Survey", survey);
             request.setAttribute("provincias", dao.getProvinces());      
-            request.setAttribute("edades", dao.getAges());    
+            request.setAttribute("edades", dao.getAges()); 
             forward ="firstStep.jsp";
             
         } else if (action.equalsIgnoreCase("deleteQuestion")){
@@ -131,7 +133,11 @@ public class SurveyController extends HttpServlet {
         
         if (action.equalsIgnoreCase("saveFirstSurvey")){
             SurveyResult surveyResult = new SurveyResult();
-            
+            surveyResult.setSurveyId(Integer.parseInt(request.getParameter("survey_id")));
+            surveyResult.setProvinceId(Integer.parseInt(request.getParameter("provincia")));
+            surveyResult.setAgeId(Integer.parseInt(request.getParameter("edad")));
+            surveyResult.setGenero(Integer.parseInt(request.getParameter("genero")));
+            dao.addSurveyResult(surveyResult);
             
             
         } else if (action.equalsIgnoreCase("addQuestion")){

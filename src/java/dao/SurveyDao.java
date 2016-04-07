@@ -14,6 +14,7 @@ import model.Question;
 import model.Survey;
 import model.QuestionAnswerResult;
 import model.QuestionOption;
+import model.SurveyResult;
 import util.DbUtil;
 import service.SessionService;
 
@@ -35,6 +36,19 @@ public class SurveyDao {
             
             sqlString = "DELETE FROM \"questions\" WHERE \"question_id\"="+questionId;
             System.out.println(sqlString);
+            statement.executeUpdate(sqlString);
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void addSurveyResult(SurveyResult result) {
+        try {
+            Statement statement = connection.createStatement();
+            String sqlString = "INSERT INTO \"survey_results\" (\"survey_id\", \"provincia_id\", \"genero\", \"edad_id\") VALUES ("+ result.getSurveyId() +","+ result.getProvinceId() +", "+ result.getGenero() +", "+ result.getAgeId() +")";
+            System.out.println(sqlString);
+            
             statement.executeUpdate(sqlString);
             
         } catch (SQLException e) {

@@ -9,28 +9,25 @@ function IsVoid(value){
 function valida(form){ 
 	var value= "";
 	$(":text, textarea").each(function() {
-		   if($(this).val() === ""){
-			   value="asdasd";
-		   }
-		    
+            if($(this).val() === ""){
+                value="asdasd";
+            }    
 	});
 	$('.checkbox_group').each(function() {  
-		var thisId= $(this).attr('id');
-
-		var checkBoxes = $('#'+thisId+' .checkbox_btn'); 
-		var oneChecked = false;
-		checkBoxes.each(function() {
-		    if ($(this).is(':checked') ) {
-		    	oneChecked = true;
-		    } 
-		}); 
-		if(!oneChecked){
-			value="asdas";
-		}
+            var thisId= $(this).attr('id');
+            var checkBoxes = $('#'+thisId+' .checkbox_btn'); 
+            var oneChecked = false;
+            checkBoxes.each(function() {
+                if ($(this).is(':checked') ) {
+                    oneChecked = true;
+                } 
+            }); 
+            if(!oneChecked){
+                value="asdas";
+            }
 	});
 	$('.radio_group').each(function() {  
 		var thisId= $(this).attr('id');
-
 		var radios = $('#'+thisId+' .radio_btn'); 
 		var oneChecked = false;
 		radios.each(function() {   
@@ -39,15 +36,9 @@ function valida(form){
 		    }   
 		}); 
 		if(!oneChecked){
-			value="asdas";
+                    value="asdas";
 		}
 	});
-	
-	/*if (IsVoid(form.title.value) == false){
-		form.title.className='input'; 
-		value += "<p>&bull; Debe digitar el titulo de la encuesta.</p>";
-	}
-	else form.title.className='input';*/
 
 	if (value != ""){
 		value= "Debe contestar todas la preguntas.";
