@@ -19,7 +19,7 @@
         <table>
             <tr>
 		<th width="30%" class="center">Pregunta</th>
-		<th width="30%">Fecha de Creaci&oacute;n</th>
+		<th width="30%">Tipo de Pregunta</th>
 		<th colspan="4" align="center">Acciones</th> 
             </tr>
             <c:forEach items="${questions}" var="Question">  
@@ -32,8 +32,7 @@
                             <td></td><td></td>
                         </c:when>    
                         <c:otherwise> 
-                            <td class="center"><a href="/surveys/SurveyController?action=questionMod?id=${Question.questionId}"><img src="img/img_editar.png" alt="EDITAR"></a></td>
-                            <td class="center"><a href="#" onclick="if(confirm('Realmente desea eliminar la pregunta:')){window.open('/surveys/SurveyController?action=deleteQuestion?id=${Question.questionId}','_self');}"><img src="img/img_eliminar.png" alt="ELIMINAR"></a></td>
+                            <td class="center"><a href="#" onclick="if(confirm('Realmente desea eliminar la pregunta.')){window.open('/surveys/SurveyController?action=deleteQuestion&id=${Question.questionId}&survey_id=${Survey.surveyId}','_self');}"><img src="img/img_eliminar.png" alt="ELIMINAR"></a></td>
                         </c:otherwise>
                     </c:choose>
                 </tr>

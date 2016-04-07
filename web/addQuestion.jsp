@@ -10,7 +10,7 @@
     <h1>Registro</h1>
     <div id="validacion" style="display: none;"></div>
     
-    <form name="formAddUser" method="post" action="/surveys/UserController/" onSubmit="return validaQuestions(this);" class="formulario">	
+    <form name="formAddUser" method="post" action="/surveys/SurveyController" onSubmit="return validaQuestions(this);" class="formulario">	
         <div class="question_wrapper">  
             <label class="label">Pregunta 1: <span class="nota"></span></label>
             <input name="question_1" type="text" id="question_1" maxlength="200" class="input">
@@ -24,7 +24,7 @@
                 </c:forEach>
                      
             </select>
-            <input type="hidden" value="<?php echo $rowSurvey['survey_id'];?>" name="survey_id">    
+            <input type="hidden" value="${Survey.surveyId}" name="survey_id">    
             
             <div id="answers_wrapper" style="display:none;"> 
                 <label class="label">Respuesta 1: <span class="nota"></span></label>

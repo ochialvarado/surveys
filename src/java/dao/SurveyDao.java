@@ -7,9 +7,13 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import model.Ages;
 import model.AnswerType;
+import model.Province;
+import model.Question;
 import model.Survey;
 import model.QuestionAnswerResult;
+import model.QuestionOption;
 import util.DbUtil;
 import service.SessionService;
 
@@ -20,6 +24,60 @@ public class SurveyDao {
     public SurveyDao() {
         connection = DbUtil.getConnection();
         sessionService = new SessionService();
+    }
+    
+    public void deleteQuestion(int questionId) {
+        try {
+            Statement statement = connection.createStatement();
+            String sqlString = "DELETE FROM \"question_options\" WHERE \"question_id\"="+questionId;
+            System.out.println(sqlString);
+            statement.executeUpdate(sqlString);
+            
+            sqlString = "DELETE FROM \"questions\" WHERE \"question_id\"="+questionId;
+            System.out.println(sqlString);
+            statement.executeUpdate(sqlString);
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void addQuestionOption(QuestionOption option) {
+        try {
+            Statement statement = connection.createStatement();
+            String sqlString = "INSERT INTO \"question_options\" (\"description\", \"question_id\", \"value\") VALUES (\'"+ option.getDescription() +"\',"+ option.getQuestionId() +", \'\')";
+            System.out.println(sqlString);
+            
+            statement.executeUpdate(sqlString);
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public Integer addQuestion(Question question) {
+        Integer returnedId = 0;
+        
+        try {
+            //Statement statement = connection.createStatement();
+            String sqlString = "INSERT INTO \"questions\" (\"title\",\"answer_type_id\",\"survey_id\") VALUES (\'"+ question.getTitle() +"\',"+ question.getAnswerTypeId() +", "+ question.getSurveyId() +")";
+            String[] returnId = {"question_id"};
+            System.out.println(sqlString);
+            PreparedStatement statement = connection.prepareStatement(sqlString,returnId);
+            int affectedRows = statement.executeUpdate();
+
+            try (ResultSet rs = statement.getGeneratedKeys()) {
+                if (rs.next()) {
+                    returnedId = rs.getInt(1);
+                }
+                rs.close();
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return returnedId;
     }
     
     public void addSurvey(Survey survey) {
@@ -57,6 +115,54 @@ public class SurveyDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    
+    public List<Province> getProvinces() {
+        List<Province> provinces = new ArrayList<Province>();
+        
+        try {
+            System.out.println(connection);
+            Statement statement = connection.createStatement();
+            String sqlQuery = "SELECT * FROM \"provincia\"";
+            System.out.println(sqlQuery);
+            ResultSet rs = statement.executeQuery(sqlQuery);
+           
+            while (rs.next()) {
+                Province provincia = new Province();
+                provincia.setProvinceId(rs.getInt("provincia_id"));
+                provincia.setName(rs.getString("name"));
+               
+                provinces.add(provincia);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return provinces;
+    }
+    
+    public List<Ages> getAges() {
+        List<Ages> ages = new ArrayList<Ages>();
+        
+        try {
+            System.out.println(connection);
+            Statement statement = connection.createStatement();
+            String sqlQuery = "SELECT * FROM \"edades\"";
+            System.out.println(sqlQuery);
+            ResultSet rs = statement.executeQuery(sqlQuery);
+           
+            while (rs.next()) {
+                Ages edad = new Ages();
+                edad.setAgeID(rs.getInt("edad_id"));
+                edad.setAgeRange(rs.getString("age_range"));
+               
+                ages.add(edad);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return ages;
     }
 
     public List<Survey> getAllSurveys(Integer userId) {

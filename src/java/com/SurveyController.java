@@ -1,4 +1,3 @@
-
 package com;
 
 import java.io.IOException;
@@ -16,6 +15,11 @@ import model.User;
 import model.Survey;
 
 import dao.SurveyDao;
+import java.util.ArrayList;
+import java.util.List;
+import model.Question;
+import model.QuestionOption;
+import model.SurveyResult;
 import service.SessionService;
 
 public class SurveyController extends HttpServlet {
@@ -43,8 +47,28 @@ public class SurveyController extends HttpServlet {
         if(currentUser == null) {
             return;
         }
-        
-        if (action.equalsIgnoreCase("addQuestion")){
+        if (action.equalsIgnoreCase("firstStep")){
+            int surveyId = Integer.parseInt(request.getParameter("id"));
+            request.setAttribute("provincias", dao.getProvinces());      
+            request.setAttribute("edades", dao.getAges());    
+            forward ="firstStep.jsp";
+            
+        } else if (action.equalsIgnoreCase("deleteQuestion")){
+            int optionId = Integer.parseInt(request.getParameter("id"));
+            int surveyId = Integer.parseInt(request.getParameter("survey_id"));
+            dao.deleteQuestion(optionId);
+            forward ="listQuestion.jsp";
+            
+            request.setAttribute("questions", dao.getQuestions(surveyId));      
+            Survey survey = dao.getSurveyById(surveyId);
+            request.setAttribute("Survey", survey);
+            
+            if(dao.surveyHasResults(surveyId) > 0) {
+                request.setAttribute("imposibleToChange", 1);
+            } else {
+                request.setAttribute("imposibleToChange", 0);
+            }
+        } else if (action.equalsIgnoreCase("addQuestion")){
             int surveyId = Integer.parseInt(request.getParameter("surveyId"));
             forward="addQuestion.jsp";
             
@@ -104,7 +128,46 @@ public class SurveyController extends HttpServlet {
         User currentUser = sessionService.checkSession(request, response);
         Survey survey = new Survey();
         
-        if (action.equalsIgnoreCase("addSurvey")){
+        
+        if (action.equalsIgnoreCase("saveFirstSurvey")){
+            SurveyResult surveyResult = new SurveyResult();
+            
+            
+            
+        } else if (action.equalsIgnoreCase("addQuestion")){
+            Question questionObject = new Question();
+            QuestionOption optionObject = new QuestionOption();
+            String answer1 = request.getParameter("answer_1");
+            Integer questionId;
+            Integer surveyId = Integer.parseInt(request.getParameter("survey_id"));
+            
+            questionObject.setAnswerTypeId(Integer.parseInt(request.getParameter("question_type")));
+            questionObject.setTitle(request.getParameter("question_1"));
+            questionObject.setSurveyId(surveyId);
+            
+            questionId = dao.addQuestion(questionObject);
+            
+            if(!"".equals(answer1)) {
+                List<QuestionOption> optionList = new ArrayList<QuestionOption>();
+                String parameterValue;
+                
+                for(Integer i=1;i<6;i++){
+                    parameterValue = request.getParameter("answer_"+i);
+                    if(!"".equals(parameterValue)) {
+                        optionObject.setQuestionId(questionId);
+                        optionObject.setDescription(parameterValue);
+                        dao.addQuestionOption(optionObject);
+                    }
+                }
+            }
+            
+            Survey surveyItem = dao.getSurveyById(surveyId);
+            request.setAttribute("questions", dao.getQuestions(surveyId));      
+            request.setAttribute("Survey", surveyItem);
+            request.setAttribute("imposibleToChange", 0);
+            forward="listQuestion.jsp";
+             
+        } else if (action.equalsIgnoreCase("addSurvey")){
             survey.setTitle(request.getParameter("title"));
             survey.setDescription(request.getParameter("description"));
             survey.setUserId(currentUser.getUserId());
