@@ -8,6 +8,14 @@
         <servlet-name>UserController</servlet-name>
         <url-pattern>/UserController</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>SurveyController</servlet-name>
+        <servlet-class>com.SurveyController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SurveyController</servlet-name>
+        <url-pattern>/SurveyController</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30

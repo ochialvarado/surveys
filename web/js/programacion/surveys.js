@@ -23,11 +23,13 @@ function valida(form){
 	}
 	else form.title.className='input';
 	
-	if (value != ""){
+	if (value !== ""){
 		document.getElementById("validacion").innerHTML = '<p><strong>LOS SIGUIENTES ERRORES HAN OCURRIDO:</strong></p>'+value;
 		$("#validacion").slideDown('slow');  
 		return false;
-	} 
+	} else {
+            return true;
+        }
 }//valida
 function validaQuestions(form){
 	var value= "";

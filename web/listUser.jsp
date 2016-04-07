@@ -6,7 +6,6 @@
 
     <h1>Usuarios</h1>
     <div id="validacion" style="display:none;">Los cambios se realizaron corectamente.</div> 
-    <div class="btn-agregar"><a style="margin-right:40px;"  href="/user.jsp">Agregar pregunta</a></div> 
 
         <table>
             <tr>

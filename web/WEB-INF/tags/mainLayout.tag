@@ -25,8 +25,7 @@
                         <div class="head">MENU</div>
                         <ul>
                             <li><a href="/surveys/UserController?action=listUser">Usuarios</a></li> 
-                            <li><a href="/surveys/UserController?action=createUser">Mi Perfil</a></li>
-                            <li><a href="/surveys/SurveysController?action=surveys">Mis Encuestas</a></li> 
+                            <li><a href="/surveys/SurveyController?action=listSurvey">Mis Encuestas</a></li> 
                         </ul>
                     </div>
                 </div> 

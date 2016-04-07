@@ -32,6 +32,8 @@ public class UserController extends HttpServlet {
     private static String LOGIN = "/dashboard.jsp";
     private static String REGISTER = "/createUser.jsp";
     private static String NOTLOGGED = "/index.jsp?error=true";
+    private static String NOTLOGGED2 = "/index.jsp";
+    
     private UserDao dao;
     private SessionService sessionService;
 
@@ -117,11 +119,13 @@ public class UserController extends HttpServlet {
             
             if(userId == null || userId.isEmpty()) {
                 dao.addUser(user);
+                forward = NOTLOGGED2;
             } else {
                 user.setUserId(Integer.parseInt(userId));
                 dao.updateUser(user);
+                forward = LIST_USER;
             }
-            forward = LIST_USER;
+            
             request.setAttribute("users", dao.getAllUsers());
         }
         
