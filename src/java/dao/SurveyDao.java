@@ -15,6 +15,8 @@ import model.Survey;
 import model.QuestionAnswerResult;
 import model.QuestionOption;
 import model.QuestionOptionQuestion;
+import model.SurveyQuestionAnswer;
+import model.SurveyQuestionAnswerMultiple;
 import model.SurveyResult;
 import util.DbUtil;
 import service.SessionService;
@@ -43,6 +45,56 @@ public class SurveyDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    
+    public Integer addSurveyQuestionAnswerMultiple(SurveyQuestionAnswerMultiple questionAnswer) {
+        Integer returnedId = 0;
+        
+        try {
+            //Statement statement = connection.createStatement();
+            String sqlString = "INSERT INTO \"survey_question_answers_multiple\" (\"survey_question_answer_id\", \"question_option_id\") VALUES ("+ questionAnswer.getSurveyQuestionAnswerId() +","+ questionAnswer.getQuestionOptionId() +")";
+            String[] returnId = {"multiple_id"}; 
+            System.out.println(sqlString);
+            PreparedStatement statement = connection.prepareStatement(sqlString,returnId);
+            int affectedRows = statement.executeUpdate();
+
+            try (ResultSet rs = statement.getGeneratedKeys()) {
+                if (rs.next()) {
+                    returnedId = rs.getInt(1);
+                }
+                rs.close();
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return returnedId;
+    }
+    
+    public Integer addSurveyQuestionAnswer(SurveyQuestionAnswer questionAnswer) {
+        Integer returnedId = 0;
+        
+        try {
+            //Statement statement = connection.createStatement();
+            String sqlString = "INSERT INTO \"survey_question_answers\" (\"survey_result_id\", \"question_id\", \"is_text\", \"text_answer\") VALUES ("+ questionAnswer.getSurveyResultId() +","+ questionAnswer.getQuestionId() +", "+ questionAnswer.getIsText() +", \'"+ questionAnswer.getTextAnswer() +"\')";
+            String[] returnId = {"survey_question_answer_id"};
+            System.out.println(sqlString);
+            PreparedStatement statement = connection.prepareStatement(sqlString,returnId);
+            int affectedRows = statement.executeUpdate();
+
+            try (ResultSet rs = statement.getGeneratedKeys()) {
+                if (rs.next()) {
+                    returnedId = rs.getInt(1);
+                }
+                rs.close();
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return returnedId;
     }
     
     public Integer addSurveyResult(SurveyResult result) {
@@ -275,27 +327,33 @@ public class SurveyDao {
         try {
             System.out.println(connection);
             Statement statement = connection.createStatement();
-            String sql = "SELECT \"questions\".\"answer_type_id\",\"questions\".\"title\", \"question_options\".* FROM \"questions\" INNER JOIN \"question_options\" ON \"questions\".\"question_id\"=\"question_options\".\"question_id\" WHERE \"survey_id\"="+surveyId+" ORDER BY \"questions\".\"question_id\" ASC";
+            String sql = "SELECT \"questions\".\"answer_type_id\",\"questions\".\"title\", \"question_options\".* FROM \"questions\" INNER JOIN \"question_options\" ON \"questions\".\"question_id\"=\"question_options\".\"question_id\" WHERE \"survey_id\"="+surveyId+" ORDER BY \"question_options\".\"question_option_id\" ASC";
             Integer counter = 1;
             System.out.println(sql);
             ResultSet rs = statement.executeQuery(sql);
             System.out.println(rs);
+            Integer currentQuestion = 0;
 
             while (rs.next()) {
                QuestionOptionQuestion object = new QuestionOptionQuestion();
+               Integer questionId= rs.getInt("question_id");
   
                object.setAnswerTypeId(rs.getInt("answer_type_id"));
                object.setQuestionText(rs.getString("title"));
                object.setDescription(rs.getString("description"));
                object.setQuestionOptionId(rs.getInt("question_option_id"));
-               object.setQuestionId(rs.getInt("question_id"));
+               object.setQuestionId(questionId);
                object.setSurveyQuestionId(counter);
                        
-                if("".equals(surveyQuestionString)){
-                    surveyQuestionString+= rs.getInt("question_id") + "type="+ rs.getInt("answer_type_id");
-                }else{ 
-                    surveyQuestionString+= "-"+rs.getInt("question_d") + "type="+ rs.getInt("answer_type_id");
-                }
+               if(currentQuestion != questionId) {
+                   currentQuestion = questionId;
+                   
+                    if("".equals(surveyQuestionString)){
+                        surveyQuestionString+= questionId + "type="+ rs.getInt("answer_type_id");
+                    }else{ 
+                        surveyQuestionString+= "-"+questionId + "type="+ rs.getInt("answer_type_id");
+                    }
+               }
                
                list.add(object);
                counter ++;

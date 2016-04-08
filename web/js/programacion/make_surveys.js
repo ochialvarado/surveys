@@ -1,16 +1,17 @@
 function IsVoid(value){
 	for (i=0; i < value.length; i++){
-		if (value.charAt(i) != " ")
-			return true
+            if (value.charAt(i) != " ") {
+                return true;
+            }
 	}
-	return false
+	return false;
 }
 
 function valida(form){ 
 	var value= "";
 	$(":text, textarea").each(function() {
             if($(this).val() === ""){
-                value="asdasd";
+                value="error";
             }    
 	});
 	$('.checkbox_group').each(function() {  
@@ -23,7 +24,7 @@ function valida(form){
                 } 
             }); 
             if(!oneChecked){
-                value="asdas";
+                value="error";
             }
 	});
 	$('.radio_group').each(function() {  
@@ -36,15 +37,15 @@ function valida(form){
 		    }   
 		}); 
 		if(!oneChecked){
-                    value="asdas";
+                    value="error";
 		}
 	});
 
 	if (value != ""){
-		value= "Debe contestar todas la preguntas.";
-		document.getElementById("validacion").innerHTML = '<p><strong>LOS SIGUIENTES ERRORES HAN OCURRIDO:</strong></p>'+value;
-		$("#validacion").slideDown('slow');  
-		jQuery("html, body").animate({ scrollTop:0 }, 1000);
-		return false;
+            value= "Debe contestar todas la preguntas.";
+            document.getElementById("validacion").innerHTML = '<p><strong>LOS SIGUIENTES ERRORES HAN OCURRIDO:</strong></p>'+value;
+            $("#validacion").slideDown('slow');  
+            jQuery("html, body").animate({ scrollTop:0 }, 1000);
+            return false;
 	}  
 }//valida

@@ -18,6 +18,8 @@ import java.util.List;
 import model.Question;
 import model.QuestionOption;
 import model.QuestionOptionQuestion;
+import model.SurveyQuestionAnswer;
+import model.SurveyQuestionAnswerMultiple;
 import model.SurveyResult;
 import service.SessionService;
 
@@ -135,8 +137,79 @@ public class SurveyController extends HttpServlet {
         User currentUser = sessionService.checkSession(request, response);
         Survey survey = new Survey();
         
-        
-        if (action.equalsIgnoreCase("saveFirstSurvey")){
+        if (action.equalsIgnoreCase("saveSurvey")){
+            String[] explodedPostFields = request.getParameter("forBucle").split("-");
+            String fieldName;
+            String stringForBd;
+            Integer questionOptionId;
+            Integer typeOfQuestion;
+            Integer questionId;
+            Integer saveSurveyId = Integer.parseInt(request.getParameter("survey_id"));
+            
+            
+            for (String answerElement: explodedPostFields) {           
+                String[] explodedField = answerElement.split("type=");
+                questionId = Integer.parseInt(explodedField[0]);
+                typeOfQuestion = Integer.parseInt(explodedField[1]);
+                fieldName = "question_"+ questionId ;
+                
+                Integer surveyQuestionAnswerId;
+                Boolean isText;
+                
+                if(typeOfQuestion != 3){
+                    SurveyQuestionAnswer surveyQuestionAnswer = new SurveyQuestionAnswer();
+                    isText = false;
+                    
+                    surveyQuestionAnswer.setIsText(isText);
+                    surveyQuestionAnswer.setQuestionId(questionId);
+                    surveyQuestionAnswer.setSurveyResultId(saveSurveyId);
+                    surveyQuestionAnswer.setTextAnswer("");
+                    
+                    surveyQuestionAnswerId = dao.addSurveyQuestionAnswer(surveyQuestionAnswer);
+                    
+                    
+                    if(typeOfQuestion == 2) {
+                        fieldName = "question_"+ questionId +"[]" ;
+                        String[] questionsAnswers = request.getParameterValues(fieldName);
+                        
+                        Integer test;
+                        
+                        for (Integer i=0; i < questionsAnswers.length; i++) {
+                            SurveyQuestionAnswerMultiple surveyQuestionMultiple = new SurveyQuestionAnswerMultiple();
+                            surveyQuestionMultiple.setQuestionOptionId(Integer.parseInt(questionsAnswers[i]));
+                            surveyQuestionMultiple.setSurveyQuestionAnswerId(surveyQuestionAnswerId);
+                            
+                            dao.addSurveyQuestionAnswerMultiple(surveyQuestionMultiple);
+                        }
+                       
+                    } else {
+                       questionOptionId = Integer.parseInt(request.getParameter(fieldName));
+                       SurveyQuestionAnswerMultiple surveyQuestionMultiple = new SurveyQuestionAnswerMultiple();
+                       
+                       surveyQuestionMultiple.setQuestionOptionId(questionOptionId);
+                       surveyQuestionMultiple.setSurveyQuestionAnswerId(surveyQuestionAnswerId);
+                               
+                       dao.addSurveyQuestionAnswerMultiple(surveyQuestionMultiple);
+                    }
+                    
+                } else {
+                    stringForBd = request.getParameter(fieldName);
+                    
+                    SurveyQuestionAnswer surveyQuestionAnswer = new SurveyQuestionAnswer();
+                    isText = true;
+                    
+                    surveyQuestionAnswer.setIsText(isText);
+                    surveyQuestionAnswer.setQuestionId(questionId);
+                    surveyQuestionAnswer.setSurveyResultId(saveSurveyId);
+                    surveyQuestionAnswer.setTextAnswer(stringForBd);
+                    
+                    surveyQuestionAnswerId = dao.addSurveyQuestionAnswer(surveyQuestionAnswer);
+                }
+            }
+            
+            forward="thanks.jsp";
+            
+        } else if (action.equalsIgnoreCase("saveFirstSurvey")){
             Integer saveSurveyId;
             SurveyResult surveyResult = new SurveyResult();
             List<QuestionOptionQuestion> optionlist = new ArrayList<QuestionOptionQuestion>();
@@ -154,6 +227,7 @@ public class SurveyController extends HttpServlet {
             request.setAttribute("Survey", surveyItem);
             request.setAttribute("questions", optionlist);
             request.setAttribute("questionsId", dao.getSurveyQuestionString());
+            request.setAttribute("saveSurveyId", saveSurveyId);
             
             forward="makeSurvey.jsp";
             

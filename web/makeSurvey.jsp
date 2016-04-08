@@ -15,29 +15,41 @@
             <c:choose>
                 <c:when test="${question.questionId != currentQuestion}">
                     
-                    <c:if test="${currentQuestion == 2 || currentQuestion == 1}"> </div></c:if>                   
+                    <c:if test="${currentQuestion != 0}"> </div></c:if> 
+                    
+                    <c:set var="currentAnswerType" value="${question.answerTypeId}" scope="page"/>
                     <c:set var="currentQuestion" value="${question.questionId}" scope="page"/>
-                   
-                    <label class="label">${currentItem})  ${question.questionText};?></label>
+                    
+                    <br/>
+                    <label class="label">${currentItem})  ${question.questionText}</label>
                     
                     
                     <c:if test="${question.answerTypeId == 1}">
                         <div id="${question.questionId}_group" class='radio_group'>
+                            <label style="cursor:pointer;width:100%;">
+                                <input class="radio_btn" type="radio" value="${question.questionOptionId}" name="question_${question.questionId}">
+                                ${question.description}<br>
+                            </label>
                     </c:if>
 
                     <c:if test="${question.answerTypeId == 2}">
                         <div id="${question.questionId}_group" class='checkbox_group'>
+                            <label style="cursor:pointer;width:100%;" class="">
+                                <input class="checkbox_btn" type="checkbox" value="${question.questionOptionId}" name="question_${question.questionId}[]">
+                                ${question.description}<br>
+                            </label> 
                     </c:if>
 
-                    <c:if test="${question.answerTypeId == 2}">
-                        <textarea class="text_area" name="question_${question.questionId}"></textarea>
+                    <c:if test="${question.answerTypeId == 3}">
+                        <div id="${question.questionId}_text">
+                            <textarea class="text_area" name="question_${question.questionId}"></textarea>
                     </c:if>
                         
                 </c:when>    
                 <c:otherwise> 
                     <c:if test="${question.answerTypeId == 1}">
                         <label style="cursor:pointer;width:100%;">
-                                <input class="radio_btn" type="radio" value="<${question.questionOptionId}" name="question_${question.questionId};?>">
+                                <input class="radio_btn" type="radio" value="${question.questionOptionId}" name="question_${question.questionId}">
                                 ${question.description}<br>
                         </label>
                     </c:if>
@@ -52,9 +64,11 @@
                 </c:otherwise>
             </c:choose>
         </c:forEach>
+        <c:if test="${currentQuestion > 0}"> </div></c:if> 
             
-        <input type="hidden" name="survey_id" value="${Survey.surveyId}" id="survey_id">  
+        <input type="hidden" name="survey_id" value="${saveSurveyId}" id="survey_id">  
         <input type="hidden" name="forBucle" value="${questionsId}" id="forBucle">  
+        <input type="hidden" name="action" value="saveSurvey" id="forBucle">  
         <div class="divisor">&nbsp;</div>
         <input type="submit" name="btnSubmit" id="btnSubmit" class="btn-aceptar" value="GUARDAR">
         <div class="clear">&nbsp;</div>
