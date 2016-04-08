@@ -14,13 +14,19 @@ import model.Survey;
 
 import dao.SurveyDao;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 import model.Question;
 import model.QuestionOption;
 import model.QuestionOptionQuestion;
 import model.SurveyQuestionAnswer;
 import model.SurveyQuestionAnswerMultiple;
 import model.SurveyResult;
+import model.SurveyResultFirstAnswer;
 import service.SessionService;
 
 public class SurveyController extends HttpServlet {
@@ -43,7 +49,6 @@ public class SurveyController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String forward="";
         String action = request.getParameter("action");
-        User currentUser = sessionService.checkSession(request, response);
         
         if (action.equalsIgnoreCase("firstStep")){
             int surveyId = Integer.parseInt(request.getParameter("id"));
@@ -56,12 +61,34 @@ public class SurveyController extends HttpServlet {
             view.forward(request, response);
             return;
         } else {
-        
+            User currentUser = sessionService.checkSession(request, response);
+            
             if(currentUser == null) {
                 return;
             }
-
-            if (action.equalsIgnoreCase("deleteQuestion")){
+            
+            if(action.equalsIgnoreCase("report")) {
+                
+                int surveyId = Integer.parseInt(request.getParameter("id"));
+                Survey surveyItem = dao.getSurveyById(surveyId);
+                List<QuestionOptionQuestion> optionlist = new ArrayList<QuestionOptionQuestion>();
+                
+                optionlist = dao.getAllQuestionsData(surveyId);
+                
+                request.setAttribute("firstStepStatics", dao.getSurveyGlobalAnswer());
+                
+                request.setAttribute("totalInterviewed", dao.getTotalInterviewed());
+                request.setAttribute("Survey", surveyItem);
+                request.setAttribute("questions", optionlist);
+                
+                forward ="report.jsp";
+                
+                //final ConcurrentMap<String, AtomicLong> map = new ConcurrentHashMap<String, AtomicLong>();
+                //map.putIfAbsent("foo", new AtomicLong(0));
+                //map.get("foo").incrementAndGet();
+                
+            
+            } else if (action.equalsIgnoreCase("deleteQuestion")){
                 int optionId = Integer.parseInt(request.getParameter("id"));
                 int surveyId = Integer.parseInt(request.getParameter("survey_id"));
                 dao.deleteQuestion(optionId);
@@ -133,8 +160,6 @@ public class SurveyController extends HttpServlet {
         
         String forward="";
         String action = request.getParameter("action");
-        
-        User currentUser = sessionService.checkSession(request, response);
         Survey survey = new Survey();
         
         if (action.equalsIgnoreCase("saveSurvey")){
@@ -208,6 +233,8 @@ public class SurveyController extends HttpServlet {
             }
             
             forward="thanks.jsp";
+            RequestDispatcher view = request.getRequestDispatcher(forward);
+            view.forward(request, response);
             
         } else if (action.equalsIgnoreCase("saveFirstSurvey")){
             Integer saveSurveyId;
@@ -230,63 +257,69 @@ public class SurveyController extends HttpServlet {
             request.setAttribute("saveSurveyId", saveSurveyId);
             
             forward="makeSurvey.jsp";
-            
-        } else if (action.equalsIgnoreCase("addQuestion")){
-            Integer questionId;
-            Integer surveyId = Integer.parseInt(request.getParameter("survey_id"));
-            String answer1 = request.getParameter("answer_1");
-            Question questionObject = new Question();
-            QuestionOption optionObject = new QuestionOption();
-            
-            questionObject.setAnswerTypeId(Integer.parseInt(request.getParameter("question_type")));
-            questionObject.setTitle(request.getParameter("question_1"));
-            questionObject.setSurveyId(surveyId);
-            
-            questionId = dao.addQuestion(questionObject);
-            
-            if(!"".equals(answer1)) {
-                String parameterValue;
-                
-                for(Integer i=1;i<6;i++){
-                    parameterValue = request.getParameter("answer_"+i);
-                    if(!"".equals(parameterValue)) {
-                        optionObject.setQuestionId(questionId);
-                        optionObject.setDescription(parameterValue);
-                        dao.addQuestionOption(optionObject);
-                    }
-                }
-            } else {
-                optionObject.setQuestionId(questionId);
-                optionObject.setDescription("void");
-                dao.addQuestionOption(optionObject);
-            }
-            
-            Survey surveyItem = dao.getSurveyById(surveyId);
-            request.setAttribute("questions", dao.getQuestions(surveyId));      
-            request.setAttribute("Survey", surveyItem);
-            request.setAttribute("imposibleToChange", 0);
-            forward="listQuestion.jsp";
+            RequestDispatcher view = request.getRequestDispatcher(forward);
+            view.forward(request, response);
              
-        } else if (action.equalsIgnoreCase("addSurvey")){
-            survey.setTitle(request.getParameter("title"));
-            survey.setDescription(request.getParameter("description"));
-            survey.setUserId(currentUser.getUserId());
-            
-            String surveyId = request.getParameter("surveyId");
-            
-            if(surveyId == null || surveyId.isEmpty()) {
-                dao.addSurvey(survey);
-                forward = LIST_SURVEY;
-            } else {
-                survey.setSurveyId(Integer.parseInt(surveyId));
-                dao.updateSurvey(survey);
-                forward = LIST_SURVEY;
+        } else {
+            User currentUser = sessionService.checkSession(request, response);
+
+            if (action.equalsIgnoreCase("addQuestion")){
+                Integer questionId;
+                Integer surveyId = Integer.parseInt(request.getParameter("survey_id"));
+                String answer1 = request.getParameter("answer_1");
+                Question questionObject = new Question();
+                QuestionOption optionObject = new QuestionOption();
+
+                questionObject.setAnswerTypeId(Integer.parseInt(request.getParameter("question_type")));
+                questionObject.setTitle(request.getParameter("question_1"));
+                questionObject.setSurveyId(surveyId);
+
+                questionId = dao.addQuestion(questionObject);
+
+                if(!"".equals(answer1)) {
+                    String parameterValue;
+
+                    for(Integer i=1;i<6;i++){
+                        parameterValue = request.getParameter("answer_"+i);
+                        if(!"".equals(parameterValue)) {
+                            optionObject.setQuestionId(questionId);
+                            optionObject.setDescription(parameterValue);
+                            dao.addQuestionOption(optionObject);
+                        }
+                    }
+                } else {
+                    optionObject.setQuestionId(questionId);
+                    optionObject.setDescription("void");
+                    dao.addQuestionOption(optionObject);
+                }
+
+                Survey surveyItem = dao.getSurveyById(surveyId);
+                request.setAttribute("questions", dao.getQuestions(surveyId));      
+                request.setAttribute("Survey", surveyItem);
+                request.setAttribute("imposibleToChange", 0);
+                forward="listQuestion.jsp";
+
+            } else if (action.equalsIgnoreCase("addSurvey")){
+                survey.setTitle(request.getParameter("title"));
+                survey.setDescription(request.getParameter("description"));
+                survey.setUserId(currentUser.getUserId());
+
+                String surveyId = request.getParameter("surveyId");
+
+                if(surveyId == null || surveyId.isEmpty()) {
+                    dao.addSurvey(survey);
+                    forward = LIST_SURVEY;
+                } else {
+                    survey.setSurveyId(Integer.parseInt(surveyId));
+                    dao.updateSurvey(survey);
+                    forward = LIST_SURVEY;
+                }
+
+                request.setAttribute("surveys", dao.getAllSurveys(currentUser.getUserId()));
             }
-            
-            request.setAttribute("surveys", dao.getAllSurveys(currentUser.getUserId()));
+
+            RequestDispatcher view = request.getRequestDispatcher(forward);
+            view.forward(request, response);
         }
-        
-        RequestDispatcher view = request.getRequestDispatcher(forward);
-        view.forward(request, response);
     }
 }

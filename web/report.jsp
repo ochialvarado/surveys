@@ -4,8 +4,14 @@
 
 <custom:registerLayout title="Realizar Encuesta">
     <h1>${Survey.title}</h1>
+    <span>Total de entrevistados: ${totalInterviewed}</span><br><br>
+    <span>
+        <c:forEach items="${firstStepStatics}" var="firstStep"> 
+            Provincia: ${firstStep.name} | Edad: ${firstStep.ageRange} | encuestados: ${firstStep.total}<br/><br/>
+        </c:forEach>
+    </span>
 
-    <form name="formAddSurvey" method="post" action="/surveys/SurveyController" onSubmit="return valida(this);" class="formulario">
+    <div>
         <div id="validacion" style="display:none"></div> 
         <c:set var="currentQuestion" value="0" scope="page" />
         <c:set var="currentAnswerType" value="0" scope="page" />
@@ -23,42 +29,39 @@
                     
                     <br/>
                     <label class="label">${currentItem})  ${question.questionText}</label>
+                    <br/><br/>
                     
                     
                     <c:if test="${question.answerTypeId == 1}">
                         <div id="${question.questionId}_group" class='radio_group'>
                             <label style="cursor:pointer;width:100%;">
-                                <input class="radio_btn" type="radio" value="${question.questionOptionId}" name="question_${question.questionId}">
-                                ${question.description}<br>
+                                * ${question.description}<br>
                             </label>
                     </c:if>
 
                     <c:if test="${question.answerTypeId == 2}">
                         <div id="${question.questionId}_group" class='checkbox_group'>
                             <label style="cursor:pointer;width:100%;" class="">
-                                <input class="checkbox_btn" type="checkbox" value="${question.questionOptionId}" name="question_${question.questionId}[]">
-                                ${question.description}<br>
+                                * ${question.description}<br>
                             </label> 
                     </c:if>
 
                     <c:if test="${question.answerTypeId == 3}">
                         <div id="${question.questionId}_text">
-                            <textarea class="text_area" name="question_${question.questionId}"></textarea>
+                            <p>${question.questionId}</p>
                     </c:if>
                         
                 </c:when>    
                 <c:otherwise> 
                     <c:if test="${question.answerTypeId == 1}">
                         <label style="cursor:pointer;width:100%;">
-                                <input class="radio_btn" type="radio" value="${question.questionOptionId}" name="question_${question.questionId}">
-                                ${question.description}<br>
+                                * ${question.description}<br>
                         </label>
                     </c:if>
                     
                     <c:if test="${question.answerTypeId == 2}">
                         <label style="cursor:pointer;width:100%;" class="">
-                                <input class="checkbox_btn" type="checkbox" value="${question.questionOptionId}" name="question_${question.questionId}[]">
-                                ${question.description}<br>
+                                *${question.description}<br>
                         </label> 
                     </c:if>  
                     
@@ -67,12 +70,8 @@
         </c:forEach>
         <c:if test="${currentQuestion > 0}"> </div></c:if> 
             
-        <input type="hidden" name="survey_id" value="${saveSurveyId}" id="survey_id">  
-        <input type="hidden" name="forBucle" value="${questionsId}" id="forBucle">  
-        <input type="hidden" name="action" value="saveSurvey" id="forBucle">  
         <div class="divisor">&nbsp;</div>
-        <input type="submit" name="btnSubmit" id="btnSubmit" class="btn-aceptar" value="GUARDAR">
+        
         <div class="clear">&nbsp;</div>
-    </form>
-    <script type="text/javascript" src="js/programacion/make_surveys.js"></script>
+    </div>
 </custom:registerLayout>

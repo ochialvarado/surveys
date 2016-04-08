@@ -17,7 +17,7 @@
                 <td>${Survey.title}</td>   
                 <td class="center"><a target="_blank" href="/surveys/SurveyController?action=firstStep&id=${Survey.surveyId}">http://localhost/surveys/SurveyController?action=firstStep&id=${Survey.surveyId}</a></td>
                 <td class="center"><a style="cursor:pointer; text-decoration:underline;" href="/surveys/SurveyController?action=listQuestion&surveyId=${Survey.surveyId}">Ir a Preguntas</a></td>
-                <td class="center"><a target="_blank" style="cursor:pointer; text-decoration:underline;" href="/surveys/SurveyController?action=report?s=${Survey.surveyId}">Reportes</a></td> 
+                <td class="center"><a target="_blank" style="cursor:pointer; text-decoration:underline;" href="/surveys/SurveyController?action=report&id=${Survey.surveyId}">Reportes</a></td> 
                 <td class="center"><a href="/surveys/SurveyController?action=edit&surveyId=${Survey.surveyId}"><img src="img/img_editar.png" alt="EDITAR"></a></td> 
                 <td class="center"><a href="#" onclick="if(confirm('Realmente desea eliminar: ${Survey.title}')){window.open('/surveys/SurveyController?action=delete&surveyId=${Survey.surveyId}','_self');}"><img src="img/img_eliminar.png" alt="ELIMINAR"></a></td>
             </tr>			

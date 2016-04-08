@@ -18,6 +18,7 @@ import model.QuestionOptionQuestion;
 import model.SurveyQuestionAnswer;
 import model.SurveyQuestionAnswerMultiple;
 import model.SurveyResult;
+import model.SurveyResultFirstAnswer;
 import util.DbUtil;
 import service.SessionService;
 
@@ -25,10 +26,19 @@ public class SurveyDao {
     private Connection connection;
     private SessionService sessionService;
     private String surveyQuestionString = "";
+    private Integer totalInterviewed = 0;
     
     public SurveyDao() {
         connection = DbUtil.getConnection();
         sessionService = new SessionService();
+    }
+
+    public Integer getTotalInterviewed() {
+        return totalInterviewed;
+    }
+
+    public void setTotalInterviewed(Integer totalInterviewed) {
+        this.totalInterviewed = totalInterviewed;
     }
     
     public void deleteQuestion(int questionId) {
@@ -389,6 +399,86 @@ public class SurveyDao {
         }
         
         return 0;
+    }
+    
+    public List<SurveyResultFirstAnswer> getSurveyGlobalAnswer() {
+        List<SurveyResultFirstAnswer> list = new ArrayList<SurveyResultFirstAnswer>();
+        
+        String sql ="SELECT  \"survey_results\". * , \"provincia\".\"name\", \"edades\".\"age_range\", count( * ) \"total_encuestados\" FROM \"survey_results\" ";
+        sql += "INNER JOIN \"provincia\" ON \"survey_results\".\"provincia_id\" = \"provincia\".\"provincia_id\" ";
+        sql += "INNER JOIN \"edades\" ON \"survey_results\".\"edad_id\" = \"edades\".\"edad_id\" ";
+        sql += "WHERE \"survey_results\".\"survey_id\" =7 ";
+        sql += "GROUP BY \"provincia\".\"name\", \"edades\".\"age_range\", \"survey_results\".\"survey_result_id\", ";
+        sql += "\"survey_results\".\"edad_id\",\"survey_results\".\"survey_id\",\"survey_results\".\"provincia_id\", ";
+        sql += "\"survey_results\".\"genero\",\"survey_results\".\"user_id\",\"survey_results\".\"creation_date\", ";
+        sql += "\"survey_results\".\"is_anonymus\"";
+        
+        
+        try {
+            System.out.println(sql);
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            String currentProvince = "";
+            String currentAgeRange = "";
+            String loopAge;
+            Integer totalOfClass = 0;
+            String loopProvince;
+            totalInterviewed = 0;
+            SurveyResultFirstAnswer object = new SurveyResultFirstAnswer();
+            SurveyResultFirstAnswer cleanObject = new SurveyResultFirstAnswer();
+        
+            while (rs.next()) {
+                loopProvince = rs.getString("name");
+                loopAge = rs.getString("age_range");
+                
+                if((totalOfClass > 0 && !currentProvince.equals(loopProvince)) || (totalOfClass > 0 && !currentAgeRange.equals(loopAge))) {
+                    SurveyResultFirstAnswer newObject = new SurveyResultFirstAnswer();
+                    
+                    currentProvince = loopProvince;
+                    currentAgeRange = loopAge;
+                    object.setTotal(totalOfClass);
+                    
+                    newObject.setAgeRange(object.getAgeRange());
+                    newObject.setGenero(object.getGenero());
+                    newObject.setName(object.getName());
+                    newObject.setTotal(object.getTotal());
+                    newObject.setSurveyId(object.getSurveyId());
+                    newObject.setSurveyResultId(object.getSurveyResultId());
+                    
+                    list.add(newObject);
+                    
+                    totalOfClass = 1;
+                    
+                    object.setAgeRange(rs.getString("age_range"));
+                    object.setGenero(rs.getInt("genero"));
+                    object.setName(rs.getString("name"));
+                    object.setSurveyId(rs.getInt("survey_id"));
+                    object.setSurveyResultId(rs.getInt("survey_result_id"));
+                    
+                } else {
+                    
+                    if(totalOfClass == 0) {
+                        currentProvince = loopProvince;
+                        currentAgeRange = loopAge;   
+                    }
+                    
+                    totalOfClass++;
+                    String range = rs.getString("age_range");
+                    
+                    object.setAgeRange(rs.getString("age_range"));
+                    object.setGenero(rs.getInt("genero"));
+                    object.setName(rs.getString("name"));
+                    object.setSurveyId(rs.getInt("survey_id"));
+                    object.setSurveyResultId(rs.getInt("survey_result_id"));
+                }
+                
+                totalInterviewed++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return list;
     }
     
     public List<AnswerType> getAnswerTypes() {
