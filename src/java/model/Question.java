@@ -5,6 +5,8 @@
  */
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 
 /**
@@ -20,9 +22,18 @@ public class Question {
    private String title;
    private String help;
    private String permalink;
+   private List<QuestionOption> optionList = new ArrayList<QuestionOption>();
 
     public Integer getQuestionId() {
         return questionId;
+    }
+
+    public List<QuestionOption> getOptionList() {
+        return optionList;
+    }
+
+    public void setOptionList(List<QuestionOption> optionList) {
+        this.optionList = optionList;
     }
 
     public void setQuestionId(Integer questionId) {

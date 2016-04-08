@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%> 
 <%@ taglib prefix="custom" tagdir="/WEB-INF/tags" %>
 
-<custom:mainLayout title="Registro">
+<custom:registerLayout title="Registro">
     <h2>Por razones estad&iacute;sticas primero debe responder estas tres preguntas: </h2>
     <form name="formAddSurvey" method="post" action="/surveys/SurveyController" onSubmit="return valida(this);" class="formulario">
 	<div id="validacion" style="display:none">${Survey.description}</div>
@@ -48,4 +48,4 @@
         <div class="clear">&nbsp;</div>
     </form> 
     <script type="text/javascript" src="js/programacion/make_surveys.js"></script>
-</custom:mainLayout>
+</custom:registerLayout>
