@@ -73,7 +73,7 @@ public class SurveyController extends HttpServlet {
                 Survey surveyItem = dao.getSurveyById(surveyId);
                 List<QuestionOptionQuestion> optionlist = new ArrayList<QuestionOptionQuestion>();
                 
-                optionlist = dao.getAllQuestionsData(surveyId);
+                optionlist = dao.getAllQuestionsData(surveyId, 3);
                 
                 request.setAttribute("firstStepStatics", dao.getSurveyGlobalAnswer(surveyId));
                 
@@ -82,12 +82,7 @@ public class SurveyController extends HttpServlet {
                 request.setAttribute("questions", optionlist);
                 
                 forward ="report.jsp";
-                
-                //final ConcurrentMap<String, AtomicLong> map = new ConcurrentHashMap<String, AtomicLong>();
-                //map.putIfAbsent("foo", new AtomicLong(0));
-                //map.get("foo").incrementAndGet();
-                
-            
+
             } else if (action.equalsIgnoreCase("deleteQuestion")){
                 int optionId = Integer.parseInt(request.getParameter("id"));
                 int surveyId = Integer.parseInt(request.getParameter("survey_id"));
@@ -249,7 +244,7 @@ public class SurveyController extends HttpServlet {
             
             saveSurveyId = dao.addSurveyResult(surveyResult);
             Survey surveyItem = dao.getSurveyById(Integer.parseInt(request.getParameter("survey_id")));
-            optionlist = dao.getAllQuestionsData(Integer.parseInt(request.getParameter("survey_id")));
+            optionlist = dao.getAllQuestionsData(Integer.parseInt(request.getParameter("survey_id")), 0);
             
             request.setAttribute("Survey", surveyItem);
             request.setAttribute("questions", optionlist);

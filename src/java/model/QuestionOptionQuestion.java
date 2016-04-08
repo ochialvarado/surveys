@@ -18,9 +18,27 @@ public class QuestionOptionQuestion {
    private Integer questionId;
    private Integer answerTypeId;
    private Integer questionOptionId;
-   private Integer surveyQuestionId;
+   private Integer surveyQuestionId; 
    private String description;
    private String questionText;
+   private Integer answerCount;
+   private String textAnswer;
+
+    public String getTextAnswer() {
+        return textAnswer;
+    }
+
+    public void setTextAnswer(String textAnswer) {
+        this.textAnswer = textAnswer;
+    }
+
+    public Integer getAnswerCount() {
+        return answerCount;
+    }
+
+    public void setAnswerCount(Integer answerCount) {
+        this.answerCount = answerCount;
+    }
 
     public Integer getSurveyQuestionId() {
         return surveyQuestionId;

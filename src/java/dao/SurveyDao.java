@@ -331,7 +331,7 @@ public class SurveyDao {
         return list;         
     }
     
-    public List<QuestionOptionQuestion> getAllQuestionsData(Integer surveyId) {
+    public List<QuestionOptionQuestion> getAllQuestionsData(Integer surveyId, Integer withResults) {
         List<QuestionOptionQuestion> list = new ArrayList<QuestionOptionQuestion>();
 
         try {
@@ -341,19 +341,48 @@ public class SurveyDao {
             Integer counter = 1;
             System.out.println(sql);
             ResultSet rs = statement.executeQuery(sql);
-            System.out.println(rs);
             Integer currentQuestion = 0;
 
             while (rs.next()) {
                QuestionOptionQuestion object = new QuestionOptionQuestion();
                Integer questionId= rs.getInt("question_id");
+               Integer questionOptionId = rs.getInt("question_option_id");
   
                object.setAnswerTypeId(rs.getInt("answer_type_id"));
                object.setQuestionText(rs.getString("title"));
                object.setDescription(rs.getString("description"));
-               object.setQuestionOptionId(rs.getInt("question_option_id"));
+               object.setQuestionOptionId(questionOptionId);
                object.setQuestionId(questionId);
                object.setSurveyQuestionId(counter);
+               
+               if(withResults > 0) {
+                   try {
+                        Integer intAnswerType = rs.getInt("answer_type_id");
+                        if(intAnswerType != 3) {
+                            String answerQuery = "SELECT COUNT (*) FROM \"survey_question_answers_multiple\" WHERE \"question_option_id\"=" +questionOptionId ;
+                            Statement statement2 = connection.createStatement();
+                            ResultSet rs2 = statement2.executeQuery(answerQuery);
+
+                            while (rs2.next()){
+                                object.setAnswerCount(rs2.getInt(1));
+                            }
+                        } else {
+                            String answerQuery = "SELECT * FROM \"survey_question_answers\" WHERE \"question_id\"=" +questionId ;
+                            Statement statement2 = connection.createStatement();
+                            ResultSet rs2 = statement2.executeQuery(answerQuery);
+                            String wholeTextsString = "";
+
+                            while (rs2.next()){
+                                wholeTextsString+=" <br/> " + rs2.getString("text_answer");
+                            }
+                            
+                            object.setTextAnswer(wholeTextsString);
+                        }
+                        
+                   } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+               }
                        
                if(currentQuestion != questionId) {
                    currentQuestion = questionId;

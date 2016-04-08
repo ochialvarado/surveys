@@ -35,33 +35,33 @@
                     <c:if test="${question.answerTypeId == 1}">
                         <div id="${question.questionId}_group" class='radio_group'>
                             <label style="cursor:pointer;width:100%;">
-                                * ${question.description}<br>
+                                <span style="display:inline-block; width: 300px;">* ${question.description} </span> <span style="display:inline-block; margin-left: 20px;"> <b>Cantidad:</b> ${question.answerCount} </span><br>
                             </label>
                     </c:if>
 
                     <c:if test="${question.answerTypeId == 2}">
                         <div id="${question.questionId}_group" class='checkbox_group'>
                             <label style="cursor:pointer;width:100%;" class="">
-                                * ${question.description}<br>
+                                <span style="display:inline-block; width: 300px;">* ${question.description} </span> <span style="display:inline-block; margin-left: 20px;"> <b>Cantidad:</b> ${question.answerCount} </span><br>
                             </label> 
                     </c:if>
 
                     <c:if test="${question.answerTypeId == 3}">
                         <div id="${question.questionId}_text">
-                            <p></p>
+                            <p>${question.textAnswer}</p>
                     </c:if>
                         
                 </c:when>    
                 <c:otherwise> 
                     <c:if test="${question.answerTypeId == 1}">
                         <label style="cursor:pointer;width:100%;">
-                                * ${question.description}<br>
+                                <span style="display:inline-block; width: 300px;">* ${question.description} </span> <span style="display:inline-block; margin-left: 20px;"> <b>Cantidad:</b> ${question.answerCount} </span><br>
                         </label>
                     </c:if>
                     
                     <c:if test="${question.answerTypeId == 2}">
                         <label style="cursor:pointer;width:100%;" class="">
-                                *${question.description}<br>
+                                <span style="display:inline-block; width: 300px;">* ${question.description} </span> <span style="display:inline-block; margin-left: 20px;"> <b>Cantidad:</b> ${question.answerCount} </span><br>
                         </label> 
                     </c:if>  
                     
