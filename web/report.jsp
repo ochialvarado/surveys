@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%> 
 <%@ taglib prefix="custom" tagdir="/WEB-INF/tags" %>
 
-<custom:registerLayout title="Realizar Encuesta">
+<custom:registerLayout title="Reporte de Encuesta">
     <h1>${Survey.title}</h1>
     <span>Total de entrevistados: ${totalInterviewed}</span><br><br>
     <span>
@@ -48,7 +48,7 @@
 
                     <c:if test="${question.answerTypeId == 3}">
                         <div id="${question.questionId}_text">
-                            <p>${question.questionId}</p>
+                            <p></p>
                     </c:if>
                         
                 </c:when>    

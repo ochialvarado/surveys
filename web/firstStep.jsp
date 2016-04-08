@@ -22,23 +22,22 @@
         </br> 
         <label class="label">2) Provincia:</label>
         <div id="provincia" class='radio_group'>
-       
-            <label style="cursor:pointer;width:100%;">
-                <c:forEach items="${provincias}" var="provincia">  
-                    <input class="radio_btn" type="radio" value="${provincia.provinceId}" name="provincia"/>
-                    ${provincia.name}</br> 
-                </c:forEach>
-            </label>    
+            <c:forEach items="${provincias}" var="provincia">  
+                <label style="cursor:pointer;width:100%;">
+                <input class="radio_btn" type="radio" value="${provincia.provinceId}" name="provincia"/>
+                ${provincia.name}</br> 
+                </label>
+            </c:forEach>    
         </div>
 	</br> 	
         <label class="label">3) Edad:</label>	
         <div id="edad" class='radio_group'>
-            <label style="cursor:pointer;width:100%;">
-                <c:forEach items="${edades}" var="edad">  
+            <c:forEach items="${edades}" var="edad"> 
+                <label style="cursor:pointer;width:100%;">
                     <input class="radio_btn" type="radio" value="${edad.ageID}" name="edad"/>
                     ${edad.ageRange}</br> 
-                </c:forEach>
-            </label>   
+                </label> 
+            </c:forEach>
         </div>
 		
         <input type="hidden" name="survey_id" value="${Survey.surveyId}" id="survey_id"/>  

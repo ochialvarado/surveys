@@ -75,7 +75,7 @@ public class SurveyController extends HttpServlet {
                 
                 optionlist = dao.getAllQuestionsData(surveyId);
                 
-                request.setAttribute("firstStepStatics", dao.getSurveyGlobalAnswer());
+                request.setAttribute("firstStepStatics", dao.getSurveyGlobalAnswer(surveyId));
                 
                 request.setAttribute("totalInterviewed", dao.getTotalInterviewed());
                 request.setAttribute("Survey", surveyItem);

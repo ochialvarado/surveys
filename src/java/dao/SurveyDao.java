@@ -401,14 +401,14 @@ public class SurveyDao {
         return 0;
     }
     
-    public List<SurveyResultFirstAnswer> getSurveyGlobalAnswer() {
+    public List<SurveyResultFirstAnswer> getSurveyGlobalAnswer(Integer surveyId) {
         List<SurveyResultFirstAnswer> list = new ArrayList<SurveyResultFirstAnswer>();
         
         String sql ="SELECT  \"survey_results\". * , \"provincia\".\"name\", \"edades\".\"age_range\", count( * ) \"total_encuestados\" FROM \"survey_results\" ";
         sql += "INNER JOIN \"provincia\" ON \"survey_results\".\"provincia_id\" = \"provincia\".\"provincia_id\" ";
         sql += "INNER JOIN \"edades\" ON \"survey_results\".\"edad_id\" = \"edades\".\"edad_id\" ";
-        sql += "WHERE \"survey_results\".\"survey_id\" =7 ";
-        sql += "GROUP BY \"provincia\".\"name\", \"edades\".\"age_range\", \"survey_results\".\"survey_result_id\", ";
+        sql += "WHERE \"survey_results\".\"survey_id\" =" + surveyId;
+        sql += " GROUP BY \"provincia\".\"name\", \"edades\".\"age_range\", \"survey_results\".\"survey_result_id\", ";
         sql += "\"survey_results\".\"edad_id\",\"survey_results\".\"survey_id\",\"survey_results\".\"provincia_id\", ";
         sql += "\"survey_results\".\"genero\",\"survey_results\".\"user_id\",\"survey_results\".\"creation_date\", ";
         sql += "\"survey_results\".\"is_anonymus\"";
@@ -474,6 +474,22 @@ public class SurveyDao {
                 
                 totalInterviewed++;
             }
+            
+            if(totalOfClass > 0) {
+                SurveyResultFirstAnswer newObject = new SurveyResultFirstAnswer();
+                object.setTotal(totalOfClass);
+
+                newObject.setAgeRange(object.getAgeRange());
+                newObject.setGenero(object.getGenero());
+                newObject.setName(object.getName());
+                newObject.setTotal(object.getTotal());
+                newObject.setSurveyId(object.getSurveyId());
+                newObject.setSurveyResultId(object.getSurveyResultId());
+
+                list.add(newObject);
+            }
+            
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
