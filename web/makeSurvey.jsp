@@ -69,7 +69,7 @@
             
         <input type="hidden" name="survey_id" value="${saveSurveyId}" id="survey_id">  
         <input type="hidden" name="forBucle" value="${questionsId}" id="forBucle">  
-        <input type="hidden" name="action" value="saveSurvey" id="forBucle">  
+        <input type="hidden" name="action" value="saveSurvey" id="forBucle2">  
         <div class="divisor">&nbsp;</div>
         <input type="submit" name="btnSubmit" id="btnSubmit" class="btn-aceptar" value="GUARDAR">
         <div class="clear">&nbsp;</div>

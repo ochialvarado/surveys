@@ -339,6 +339,7 @@ public class SurveyDao {
             Statement statement = connection.createStatement();
             String sql = "SELECT \"questions\".\"answer_type_id\",\"questions\".\"title\", \"question_options\".* FROM \"questions\" INNER JOIN \"question_options\" ON \"questions\".\"question_id\"=\"question_options\".\"question_id\" WHERE \"survey_id\"="+surveyId+" ORDER BY \"question_options\".\"question_option_id\" ASC";
             Integer counter = 1;
+            surveyQuestionString = "";
             System.out.println(sql);
             ResultSet rs = statement.executeQuery(sql);
             Integer currentQuestion = 0;
